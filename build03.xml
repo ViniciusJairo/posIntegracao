@@ -1,0 +1,74 @@
+<project name="build03" default="main" basedir=".">
+	<description>A sample build file for this project</description>
+	<!-- global properties for this build file -->
+	<property name="source.dir" location="src" />
+	<property name="build.dir" location="bin" />
+	<property name="doc.dir" location="doc" />
+	<property name="jar.name" value="${ant.project.name}.jar"/>
+	<property name="jar.dir" value="${build.dir}/jar"/>
+	<property name="jar.file" value="${jar.dir}/${jar.name}"/>
+	<property name="test.build.dir" value="bin/teste"/>
+  	<property name="test.src.dir" value="src"/>
+  	<property name="test.dir" value="teste"/>
+  	
+  	<property name="test.reports" value="bin/teste" />
+	<path id="junit.class.path">
+		<pathelement location="lib/junit-4.13-beta-3.jar"/>
+		<pathelement location="lib/hamcrest-core-1.3"/>
+		<pathelement location="${build.dir}"/>
+	</path>
+
+	<target name="init" description="setup project directories">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${doc.dir}" />
+		<mkdir dir="${test.dir}"/>
+
+	</target>
+	
+
+	<target name="compile" description="compile java sources">
+		<javac srcdir="${source.dir}" destdir="${build.dir}"
+			includeantruntime="false" />
+	</target>
+
+	<target name="doc" description="generate documentation">
+		<javadoc sourcepath="${source.dir}" destdir="${doc.dir}">
+		     <fileset dir="${source.dir}">
+		                <include name="**" />
+		     </fileset>	
+		</javadoc>
+	</target>
+	
+	<target name="jar" depends="compile">
+	  <mkdir dir="${jar.dir}"/>
+	  
+    <jar destfile="${jar.dir}/trabalho.jar" basedir="${build.dir}">
+       <manifest>
+        <attribute name="Main-Class" value="test.Main" />
+      </manifest>
+    </jar>
+  </target>
+  
+  <!-- Compile the java code in ${src.dir} into ${build.dir} -->
+	<target name="testar" description="Testar">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="junit.class.path"/>
+			<classpath location="${build.dir}" />
+			<test name="valoresTest" haltonfailure="no" todir="${test.dir}">
+				<formatter type="plain" />
+				<formatter type="xml" />
+					
+			</test>
+		</junit>
+	</target>
+  
+
+    
+  
+	
+	
+	<target name="main" depends="init, compile, doc, jar, testar">
+		<description>Main target</description>
+	</target>
+
+</project>
